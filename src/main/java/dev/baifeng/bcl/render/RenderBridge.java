@@ -26,7 +26,11 @@ public final class RenderBridge implements PreLaunchEntrypoint {
             String backend = settings.getProperty("backend", "").trim().toLowerCase(java.util.Locale.ROOT);
             if (!BackendOptions.valid(backend)) return;
             Path options = game.resolve("options.txt");
-            String original = Files.exists(options) ? Files.readString(options, StandardCharsets.UTF_8) : "";
+            if (!Files.isRegularFile(options)) {
+                System.err.println("[BCL Render API Bridge] Waiting for Minecraft to create options.txt; retry next launch.");
+                return;
+            }
+            String original = Files.readString(options, StandardCharsets.UTF_8);
             if (!BackendOptions.migrated(original)) {
                 System.err.println("[BCL Render API Bridge] Waiting for Minecraft to migrate options.txt; retry next launch.");
                 return;

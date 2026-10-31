@@ -10,7 +10,7 @@ final class BackendOptions {
     }
 
     static boolean migrated(String original) {
-        if (original.isEmpty()) return true;
+        if (original.isEmpty()) return false;
         for (String line : original.replace("\r\n", "\n").split("\n")) {
             if (line.startsWith("version:")) {
                 try { return Integer.parseInt(line.substring(8).trim()) >= 4892; }

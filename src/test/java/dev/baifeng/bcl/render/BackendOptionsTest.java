@@ -27,6 +27,10 @@ public final class BackendOptionsTest {
             Files.writeString(game.resolve("config/bcl-render-api.properties"), "backend=metal\n", StandardCharsets.UTF_8);
             RenderBridge.apply(game);
             if (!Files.readString(game.resolve("options.txt")).equals(updated)) throw new AssertionError("Invalid backend changed options");
+            Files.delete(game.resolve("options.txt"));
+            Files.writeString(game.resolve("config/bcl-render-api.properties"), "backend=opengl\n", StandardCharsets.UTF_8);
+            RenderBridge.apply(game);
+            if (Files.exists(game.resolve("options.txt"))) throw new AssertionError("Bridge should wait for Minecraft to create options");
         } finally {
             try (var paths = Files.walk(game)) {
                 for (Path file : paths.sorted(Comparator.reverseOrder()).toList()) Files.deleteIfExists(file);
